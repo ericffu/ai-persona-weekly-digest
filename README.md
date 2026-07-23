@@ -1,22 +1,34 @@
 # AI Persona Weekly Digest
 
-用于打磨、测试和沉淀「按读者角色定制 AI 周报」Codex skill 的工作区。
+一个为不同读者角色生成 AI 周报的 Codex skill。它先建立一份共用的 AI 资讯素材池，再按角色筛选和改写，避免为每个版本重复搜索。
 
-## 目录
+支持四类读者：
 
-- `ai-persona-digest/`：可安装的 skill；包含执行说明、角色/行业参考资料和 HTML 模板。
-- `artifacts/`：每次生成周报的 Markdown、HTML 等制品；按 skill 名归档。
+- AI 小白：用大白话说明本周变化与实际影响。
+- 产品经理：提炼交互、商业化、增长和竞品启示。
+- 技术研发：关注架构、基准、部署门槛和可复现性。
+- 行业从业者：增加行业专项搜索，并给出业务启示。
 
-## 当前 skill
+每个版本都会产出 Markdown 源稿和独立 HTML 周报页。
 
-`ai-persona-digest` 会基于同一批 AI 周度资讯，为 AI 小白、产品经理、技术研发或特定行业从业者生成相应版本的周报。每个版本同时输出 Markdown 源稿和独立 HTML 页面。
+## 安装到 Codex
 
-可直接使用以下提示开始：
+将下面整段内容复制给具备终端权限的 Agent，即可安装或更新此 skill：
+
+```text
+请将 https://github.com/ericffu/ai-persona-weekly-digest 安装为 Codex skill，名称为 ai-persona-digest。
+
+目标目录是 ${CODEX_HOME:-$HOME/.codex}/skills/ai-persona-digest：如果目录不存在，请 git clone 该仓库到这个目录；如果已经存在，请进入该目录并拉取最新 main 分支。完成后确认 SKILL.md 位于目标目录根部，并告诉我如何调用它。
+```
+
+安装完成后，可直接这样使用：
 
 ```text
 Use $ai-persona-digest to create this week’s AI digest for product managers.
 ```
 
-## 产物约定
+## 生成内容
 
-角色版周报输出至 `artifacts/ai-persona-digest/`。行业从业者场景会将可复用的搜索关键词和关注机构记录在 skill 的 `references/industries.md`。
+生成周报时，skill 会根据用户选择的角色确定日期范围、复用或搜索资料，并按角色规则输出内容。行业版会记住已使用的行业搜索关键词和关注公司，供后续周报复用。
+
+详细流程与输出规则见 [SKILL.md](SKILL.md)。
