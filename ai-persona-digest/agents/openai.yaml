@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI 角色周报"
+  short_description: "Generate persona-specific AI weekly digests and HTML pages"
+  default_prompt: "Use $ai-persona-digest to create this week’s AI digest for product managers."

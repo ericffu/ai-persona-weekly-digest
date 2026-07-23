@@ -1,0 +1,1257 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>AI 周报 · 2026-04-17 — 2026-04-24</title>
+<meta name="description" content="一周内 AI 领域的模型发布、产品、论文、观点与教育动态,每条附原始来源。" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700;900&family=Noto+Sans+SC:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     Anthropic / Claude 官网风格:
+     - 暖米色 #F0EEE6 纸感背景
+     - Fraunces + Noto Serif SC 做衬线大字
+     - Claude 橙 #CC785C 做唯一强调色
+     - 长文排版,非卡片堆砌
+     ============================================================ */
+
+  :root {
+    --bg: #F0EEE6;
+    --surface: #F5F3EE;
+    --surface-2: #EAE7DC;
+    --text: #1B1A17;
+    --text-soft: #3D3934;
+    --text-muted: #7A736A;
+    --divider: #D9D3C4;
+    --divider-soft: #E5DFD1;
+    --accent: #CC785C;
+    --accent-hover: #B55F47;
+    --accent-soft: #F5DDD2;
+    --accent-subtle: #FAEBE2;
+
+    --serif: "Fraunces", "Noto Serif SC", "Source Han Serif SC", "Songti SC", ui-serif, Georgia, serif;
+    --sans: "Inter", "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --mono: "JetBrains Mono", "SF Mono", Menlo, ui-monospace, monospace;
+
+    --col-wide: 1180px;
+    --col-reading: 760px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1A1714;
+      --surface: #22201C;
+      --surface-2: #2E2B26;
+      --text: #F2EFE7;
+      --text-soft: #D5CFC3;
+      --text-muted: #958C80;
+      --divider: #3A352D;
+      --divider-soft: #2A2620;
+      --accent: #E29179;
+      --accent-hover: #F4A48C;
+      --accent-soft: #3E2C24;
+      --accent-subtle: #2B2019;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "kern", "liga", "ss01";
+    text-rendering: optimizeLegibility;
+  }
+  a { color: inherit; }
+  ::selection { background: var(--accent-soft); color: var(--text); }
+
+  /* -------- Top nav -------- */
+  .topnav {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: saturate(180%) blur(16px);
+    -webkit-backdrop-filter: saturate(180%) blur(16px);
+    border-bottom: 1px solid var(--divider-soft);
+  }
+  .topnav-inner {
+    max-width: var(--col-wide);
+    margin: 0 auto;
+    padding: 14px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px;
+  }
+  .wordmark {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+    display: inline-flex; align-items: center; gap: 10px;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .wordmark-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-subtle);
+  }
+  .wordmark em {
+    font-style: italic; font-weight: 400;
+    color: var(--accent);
+  }
+  .topnav-meta {
+    font-family: var(--mono);
+    font-size: 11.5px; letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  /* -------- Hero -------- */
+  .hero {
+    max-width: var(--col-wide);
+    margin: 0 auto;
+    padding: 88px 32px 64px;
+    border-bottom: 1px solid var(--divider);
+    position: relative;
+  }
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 11.5px; letter-spacing: 0.18em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+  .hero-title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(44px, 6.6vw, 84px);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+    margin: 0 0 28px;
+    color: var(--text);
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+    max-width: 15ch;
+  }
+  .hero-title em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .hero-lede {
+    max-width: 640px;
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--text-soft);
+    margin: 0 0 40px;
+  }
+  .hero-lede code {
+    font-family: var(--mono);
+    font-size: 0.85em;
+    padding: 1px 6px;
+    background: var(--surface-2);
+    border-radius: 4px;
+  }
+  .hero-meta {
+    display: flex; gap: 56px; flex-wrap: wrap;
+    padding-top: 32px;
+    border-top: 1px solid var(--divider-soft);
+  }
+  .hero-meta dl {
+    margin: 0;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .hero-meta dt {
+    font-family: var(--mono);
+    font-size: 10.5px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--text-muted);
+  }
+  .hero-meta dd {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 17px; font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.005em;
+  }
+
+  /* -------- Layout -------- */
+  .shell {
+    max-width: var(--col-wide);
+    margin: 0 auto;
+    padding: 64px 32px 96px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 200px;
+    gap: 72px;
+    align-items: start;
+  }
+  article { min-width: 0; max-width: var(--col-reading); margin: 0 auto; }
+  aside.toc {
+    position: sticky; top: 80px;
+    font-family: var(--mono);
+  }
+  .toc-label {
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 10.5px;
+    color: var(--accent);
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--divider);
+  }
+  .toc ol {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 2px;
+    counter-reset: toc;
+  }
+  .toc li { counter-increment: toc; }
+  .toc a {
+    display: flex; gap: 12px; align-items: baseline;
+    color: var(--text-muted); text-decoration: none;
+    font-size: 12.5px;
+    padding: 6px 0;
+    transition: color 0.15s;
+  }
+  .toc a::before {
+    content: counter(toc, decimal-leading-zero);
+    color: var(--text-muted); opacity: 0.6;
+    min-width: 24px;
+    font-variant-numeric: tabular-nums;
+  }
+  .toc a:hover {
+    color: var(--accent);
+  }
+  .toc a:hover::before { opacity: 1; color: var(--accent); }
+
+  @media (max-width: 960px) {
+    .shell { grid-template-columns: 1fr; gap: 48px; padding: 48px 24px 72px; }
+    aside.toc {
+      position: static; order: -1;
+      padding: 20px 24px;
+      background: var(--surface);
+      border: 1px solid var(--divider-soft);
+      border-radius: 12px;
+    }
+    .toc ol { flex-direction: row; flex-wrap: wrap; gap: 4px 16px; }
+  }
+
+  /* -------- Highlights -------- */
+  .highlights { margin-bottom: 96px; }
+  .highlights-list { list-style: none; padding: 0; margin: 0; }
+  .highlights-list li {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 28px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--divider-soft);
+    align-items: baseline;
+  }
+  .highlights-list li:first-child { padding-top: 8px; }
+  .highlights-list li:last-child { border-bottom: 0; }
+  .hl-idx {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 32px;
+    line-height: 1;
+    color: var(--accent);
+    font-variation-settings: "opsz" 32;
+  }
+  .hl-body p {
+    margin: 0 0 10px;
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 500;
+    letter-spacing: -0.003em;
+  }
+  .hl-body p code {
+    font-family: var(--mono);
+    font-size: 0.82em;
+    padding: 1px 6px;
+    background: var(--accent-subtle);
+    color: var(--accent);
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .hl-ref {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    border-bottom: 1px dashed transparent;
+    transition: all 0.15s;
+  }
+  .hl-ref:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* -------- Category -------- */
+  section.category {
+    padding-top: 80px;
+    margin-top: 80px;
+    border-top: 1px solid var(--divider);
+  }
+  section.category:first-of-type {
+    padding-top: 0; margin-top: 0; border-top: 0;
+  }
+  .cat-marker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .cat-marker::before {
+    content: "";
+    display: block;
+    width: 24px; height: 1px;
+    background: var(--accent);
+  }
+  .cat-title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(30px, 4.2vw, 44px);
+    line-height: 1.1;
+    letter-spacing: -0.018em;
+    margin: 0 0 48px;
+    color: var(--text);
+    font-variation-settings: "opsz" 60, "SOFT" 30;
+  }
+
+  /* -------- Item -------- */
+  .item {
+    padding: 40px 0;
+    border-bottom: 1px solid var(--divider-soft);
+  }
+  .item:first-child { padding-top: 0; }
+  .item:last-child { border-bottom: 0; }
+  .item-title {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 25px;
+    line-height: 1.32;
+    letter-spacing: -0.008em;
+    margin: 0 0 18px;
+    color: var(--text);
+    font-variation-settings: "opsz" 36;
+  }
+  .item-title .badge {
+    display: inline-block;
+    padding: 2px 9px;
+    margin-left: 8px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    background: var(--accent-subtle);
+    border-radius: 4px;
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
+  }
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 8px 10px;
+    margin-bottom: 20px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--text-muted);
+  }
+  .meta-row .chip {
+    padding: 3px 11px;
+    border: 1px solid var(--divider);
+    border-radius: 999px;
+    background: var(--surface);
+    line-height: 1.6;
+  }
+  .meta-row .chip.date {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+  }
+  .item-lead {
+    font-size: 16px;
+    line-height: 1.75;
+    color: var(--text-soft);
+    margin: 0 0 16px;
+  }
+  .points {
+    margin: 0 0 20px;
+    padding-left: 20px;
+    color: var(--text-soft);
+    font-size: 15.5px;
+    line-height: 1.78;
+  }
+  .points li {
+    margin-bottom: 8px;
+    padding-left: 4px;
+  }
+  .points li::marker {
+    color: var(--accent);
+  }
+  .points code,
+  .item-lead code,
+  .why code,
+  .points-mini code {
+    font-family: var(--mono);
+    font-size: 0.86em;
+    padding: 1px 5px;
+    background: var(--surface-2);
+    border-radius: 4px;
+    color: var(--text);
+  }
+  .why {
+    margin: 24px 0 20px;
+    padding: 18px 24px;
+    border-left: 3px solid var(--accent);
+    background: var(--surface);
+    border-radius: 2px 8px 8px 2px;
+  }
+  .why-label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .why-body {
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.72;
+    color: var(--text-soft);
+    font-style: italic;
+    margin: 0;
+    font-variation-settings: "opsz" 24;
+  }
+  .sources {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 22px;
+    align-items: center;
+  }
+  .sources-label {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--text-muted);
+    margin-right: 4px;
+  }
+  .src {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px 5px 13px;
+    border: 1px solid var(--divider);
+    border-radius: 999px;
+    font-family: var(--sans);
+    font-size: 12.5px;
+    color: var(--text-soft);
+    text-decoration: none;
+    background: transparent;
+    transition: all 0.15s;
+  }
+  .src::after {
+    content: "↗";
+    color: var(--text-muted);
+    font-size: 11px;
+    transition: transform 0.15s, color 0.15s;
+  }
+  .src:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-subtle);
+  }
+  .src:hover::after {
+    color: var(--accent);
+    transform: translate(1px, -1px);
+  }
+
+  /* -------- Editor note (arXiv) -------- */
+  .editor-note {
+    margin: 32px 0 0;
+    padding: 16px 20px;
+    border: 1px dashed var(--divider);
+    border-radius: 8px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14.5px;
+    color: var(--text-muted);
+    line-height: 1.65;
+    background: transparent;
+  }
+
+  /* -------- Followup -------- */
+  section.followup {
+    margin-top: 96px;
+    padding-top: 48px;
+    border-top: 1px solid var(--divider);
+  }
+  .followup h2 {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 26px;
+    letter-spacing: -0.01em;
+    margin: 0 0 24px;
+  }
+  .followup ul {
+    list-style: none; padding: 0; margin: 0;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .followup li {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 20px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--divider-soft);
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--text-soft);
+  }
+  .followup li:last-child { border-bottom: 0; }
+  .followup .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--accent);
+    padding-top: 2px;
+  }
+  @media (max-width: 640px) {
+    .followup li { grid-template-columns: 1fr; gap: 6px; }
+  }
+
+  /* -------- Footer -------- */
+  footer {
+    border-top: 1px solid var(--divider);
+    padding: 56px 32px 64px;
+    max-width: var(--col-wide);
+    margin: 0 auto;
+    text-align: center;
+  }
+  footer .wm {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+  footer .wm em { font-style: italic; color: var(--accent); }
+  footer .meta {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  /* -------- Responsive tweaks -------- */
+  @media (max-width: 640px) {
+    .hero { padding: 56px 20px 44px; }
+    .hero-meta { gap: 28px; padding-top: 24px; }
+    .shell { padding: 32px 20px 64px; }
+    .cat-title { font-size: 26px; margin-bottom: 32px; }
+    .item-title { font-size: 20px; }
+    .item { padding: 28px 0; }
+    section.category { padding-top: 56px; margin-top: 56px; }
+    .highlights-list li { grid-template-columns: 40px 1fr; gap: 16px; padding: 16px 0; }
+    .hl-idx { font-size: 24px; }
+    .hl-body p { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topnav">
+  <div class="topnav-inner">
+    <a class="wordmark" href="#top">
+      <span class="wordmark-dot"></span>
+      <span>AI <em>周报</em></span>
+    </a>
+    <div class="topnav-meta">Vol. 01 · 2026 · W17</div>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-label">AI Weekly · Vol. 01 · Issue 2026-W17</div>
+  <h1 class="hero-title">一周内,<br/><em>AI</em> 走到了哪里。</h1>
+  <p class="hero-lede">覆盖模型发布、产品、论文、观点、行业动态、开源项目与 AI 教育八个板块,每条附原始来源链接。由 <code>ai-weekly-digest</code> skill 整理。标注 <code>[跨窗口]</code> 的条目首发于 4/15–4/16,但本周仍是讨论主线,故保留。</p>
+  <div class="hero-meta">
+    <dl>
+      <dt>覆盖窗口</dt>
+      <dd>2026.04.17 — 04.24</dd>
+    </dl>
+    <dl>
+      <dt>生成于</dt>
+      <dd>2026.04.24</dd>
+    </dl>
+    <dl>
+      <dt>板块 / 条目</dt>
+      <dd>8 / 23</dd>
+    </dl>
+  </div>
+</section>
+
+<div class="shell">
+  <article>
+
+    <!-- ============================================================
+         本周速览
+    ============================================================ -->
+    <section id="highlights" class="highlights">
+      <div class="cat-marker">本周速览 · The TL;DR</div>
+      <h2 class="cat-title">如果只看一屏,看这六条。</h2>
+      <ol class="highlights-list">
+        <li>
+          <span class="hl-idx">01</span>
+          <div class="hl-body">
+            <p>OpenAI 发布 <strong>GPT-5.5</strong>,Terminal-Bench 2.0 拿下 82.7%,直接把编程 / 科研智能体往前顶了一档。</p>
+            <a class="hl-ref" href="#models">→ 见「一、模型发布」</a>
+          </div>
+        </li>
+        <li>
+          <span class="hl-idx">02</span>
+          <div class="hl-body">
+            <p><strong>DeepSeek-V4 Preview</strong> 开源,1.6T 总参数 + 1M 默认上下文,API 兼容 OpenAI / Anthropic。</p>
+            <a class="hl-ref" href="#models">→ 见「一、模型发布」&amp;「七、开源项目」</a>
+          </div>
+        </li>
+        <li>
+          <span class="hl-idx">03</span>
+          <div class="hl-body">
+            <p><strong>Claude Opus 4.7</strong> 继续主导话题——4/22 Anthropic 静默把 Claude Code 调到 $100/月又悄悄撤回,开发者怒火集中爆发。</p>
+            <a class="hl-ref" href="#products">→ 见「二、AI 产品」&amp;「五、X/Twitter 热门」</a>
+          </div>
+        </li>
+        <li>
+          <span class="hl-idx">04</span>
+          <div class="hl-body">
+            <p>阿里云上线企业级零代码 Agent 平台 <strong>JVS Crew</strong>,主打"被集成",写进现有 App / SaaS。</p>
+            <a class="hl-ref" href="#products">→ 见「二、AI 产品」</a>
+          </div>
+        </li>
+        <li>
+          <span class="hl-idx">05</span>
+          <div class="hl-body">
+            <p>AI 编程工具集体调定价:GitHub Copilot 暂停个人订阅、Opus 4.7 只留给 Pro+($39/月)、Windsurf 2.0 把 Devin 全量接入。</p>
+            <a class="hl-ref" href="#products">→ 见「二、AI 产品」</a>
+          </div>
+        </li>
+        <li>
+          <span class="hl-idx">06</span>
+          <div class="hl-body">
+            <p><strong>AI 教育</strong>本周主线:清华附小「玫瑰小语」全国首个小学语文垂直模型 4/17 发布 · Simple TA / NovaPals 等校园级 AI 助教集中上线 · Sal Khan 与 Google/微软合办 $10K AI 本科。</p>
+            <a class="hl-ref" href="#education">→ 见「八、AI 教育」</a>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ============================================================
+         01 · 模型发布
+    ============================================================ -->
+    <section id="models" class="category">
+      <div class="cat-marker">01 / 08 — Model Releases</div>
+      <h2 class="cat-title">一、模型发布 / 新版本</h2>
+
+      <div class="item">
+        <h3 class="item-title">OpenAI GPT-5.5</h3>
+        <div class="meta-row">
+          <span class="chip">OpenAI</span>
+          <span class="chip date">2026-04-23</span>
+        </div>
+        <ul class="points">
+          <li>全新重训的「Agentic 模型」,主打长程编程与多步科研任务</li>
+          <li>Terminal-Bench 2.0 得分 <strong>82.7%</strong>,GDPval <strong>84.9%</strong>,编程场景碾压 GPT-5.4</li>
+          <li>GeneBench、BixBench 等生物信息学基准表现领先;内部团队用它 + 自定义 harness 在 Ramsey number 方向找到新证明(已在 Lean 中被验证)</li>
+          <li>推理效率同步升级,定价信息待后续展开</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">这是 OpenAI 在 GPT-5 系列中首次把「科研协同 + 长程编程」列为一级目标,Codex / Agents SDK 路线彻底落地。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://openai.com/index/introducing-gpt-5-5/" target="_blank" rel="noopener">OpenAI 官方公告</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">DeepSeek-V4 Preview(Pro / Flash)</h3>
+        <div class="meta-row">
+          <span class="chip">深度求索 DeepSeek</span>
+          <span class="chip date">2026-04-24</span>
+        </div>
+        <ul class="points">
+          <li><strong>V4-Pro</strong>:1.6T 总参数、激活 49B(MoE);<strong>V4-Flash</strong>:284B 总参数、激活 13B</li>
+          <li>默认 <strong>1M token</strong> 上下文,引入新的 DeepSeek Sparse Attention(DSA)做 token 维度压缩</li>
+          <li>API 同步上线,<code>deepseek-v4-pro</code> / <code>deepseek-v4-flash</code> 即可调用;兼容 OpenAI + Anthropic 接口,支持思考模式与强度调节</li>
+          <li>权重同步开源到 Hugging Face / ModelScope;旧接口 <code>deepseek-chat</code>、<code>deepseek-reasoner</code> 将于 2026-07-24 停服</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">开源阵营首次把「1M 默认上下文 + 接近顶级闭源非思考模式」打齐,Agent 框架厂商会在未来两周密集接入。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://www.163.com/tech/article/KR9BSKB500098IEO.html" target="_blank" rel="noopener">网易科技通稿</a>
+          <a class="src" href="https://www.163.com/dy/article/KR9CM8KV0511D6RL.html" target="_blank" rel="noopener">网易订阅详版</a>
+          <a class="src" href="https://huggingface.co/collections/deepseek-ai/deepseek-v4" target="_blank" rel="noopener">Hugging Face 权重</a>
+          <a class="src" href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/blob/main/DeepSeek_V4.pdf" target="_blank" rel="noopener">技术报告 PDF</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">Anthropic Claude Opus 4.7 <span class="badge">跨窗口 · 首发 4/16–4/18</span></h3>
+        <div class="meta-row">
+          <span class="chip">Anthropic</span>
+          <span class="chip date">2026-04-16 → 2026-04-18</span>
+        </div>
+        <ul class="points">
+          <li>定位为 4.6 的增量升级,集中强化 agentic coding、高分辨率视觉、长时程自主执行</li>
+          <li>上线 Anthropic 官方产品 / API,以及 Amazon Bedrock、Google Cloud Vertex、Microsoft Foundry</li>
+          <li>新增 <code>xhigh</code> 推理档位(介于 high 与 max 之间);Claude Code 默认调到 <code>xhigh</code></li>
+          <li>定价维持 Opus 一档:$5/M input · $25/M output</li>
+          <li>属于「Project Glasswing」安全策略下的第一款——相对 Mythos Preview 主动削弱部分 cyber 能力并内置自动拦截,合规安全研究者可申请 Cyber Verification Program</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">本周围绕 4.7 的定价、系统提示词变动、Claude Code 限额连锁反应(见第二、第五节)是整周最大话题。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://www.marktechpost.com/2026/04/18/anthropic-releases-claude-opus-4-7-a-major-upgrade-for-agentic-coding-high-resolution-vision-and-long-horizon-autonomous-tasks/" target="_blank" rel="noopener">MarkTechPost 4/18</a>
+          <a class="src" href="https://pureai.com/articles/2026/04/16/anthropic-releases-opus-4dot7.aspx" target="_blank" rel="noopener">Pure AI 4/16</a>
+          <a class="src" href="https://www.bloomberg.com/news/articles/2026-04-16/anthropic-unveils-updated-opus-model-aimed-at-advanced-coding" target="_blank" rel="noopener">Bloomberg 4/16</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">Qwen3.6-27B</h3>
+        <div class="meta-row">
+          <span class="chip">通义千问</span>
+          <span class="chip date">2026-04-22(Simon Willison 记录)</span>
+        </div>
+        <ul class="points">
+          <li>27B dense 模型;官方声称主要编程基准「全面超越」上代开源旗舰 Qwen3.5-397B-A17B(总 397B / 激活 17B 的 MoE)</li>
+          <li>本地权重仅 ~16.8 GB,可在消费级硬件上跑出接近闭源旗舰的 coding 水平</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">如果 benchmark 稳得住,这代表开源稠密模型 scaling 不必再靠堆 MoE,给个人开发者本地 agent 流水线带来新的默认选项。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://simonwillison.net/2026/Apr/22/" target="_blank" rel="noopener">Simon Willison — Flagship-Level Coding in a 27B Dense Model</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         02 · AI 产品
+    ============================================================ -->
+    <section id="products" class="category">
+      <div class="cat-marker">02 / 08 — Products · Tools · Agents</div>
+      <h2 class="cat-title">二、AI 产品 / 工具 / Agent</h2>
+
+      <div class="item">
+        <h3 class="item-title">阿里云 JVS Crew — 企业级零代码 Agent 构建平台</h3>
+        <div class="meta-row">
+          <span class="chip">阿里云</span>
+          <span class="chip date">2026-04-23</span>
+        </div>
+        <ul class="points">
+          <li>以「被集成」为核心理念,可直接嵌入现有 App、SaaS 服务或智能硬件</li>
+          <li>企业不用自建 Agent 框架就能拿到生产级能力,原生支持多租户隔离、安全合规、成本核算</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">国内大厂开始把 Agent 平台当作「商品级中间件」卖,而不是只做 C 端入口——一定程度对标 OpenAI Agents SDK / AWS Bedrock AgentCore。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://m.10jqka.com.cn/20260423/c676223576.shtml" target="_blank" rel="noopener">同花顺财经</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">Claude Code 定价风波:$100/月 假新闻 + 真收紧</h3>
+        <div class="meta-row">
+          <span class="chip">Anthropic</span>
+          <span class="chip date">2026-04-22</span>
+        </div>
+        <ul class="points">
+          <li>Anthropic 当天悄悄改了 <code>claude.com/pricing</code> 页面(没在 "Choosing a Claude plan" 页改),加入疑似 $100/月 的 Claude Code 档位,几小时后又撤回</li>
+          <li>没有任何官方公告——是 Simon Willison 与开发者社区通过网页对比发现的</li>
+          <li>叠加 Claude Code 在 Opus 4.7 默认 <code>xhigh</code> 之后 token 消耗暴增,小团队对限额和价格的不确定性强烈反弹</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">可能预示 Claude Code 正在拆独立档位,开发者工具定价模型(per-request vs per-token vs per-session)会被重塑。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://simonwillison.net/2026/Apr/22/" target="_blank" rel="noopener">Simon Willison — Is Claude Code going to cost $100/month?</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">GitHub Copilot 定价大改 + 暂停个人订阅</h3>
+        <div class="meta-row">
+          <span class="chip">GitHub</span>
+          <span class="chip date">2026-04-22</span>
+        </div>
+        <ul class="points">
+          <li>暂停 Individual 新订阅注册</li>
+          <li>Claude Opus 4.7 只保留给 $39/月 的 Pro+ 档,旧 Opus 版本全部下掉</li>
+          <li>全面收紧使用限制,转向「每会话 + 每周」的 token-based 用量上限(此前 Copilot 独特的 per-request 计价被放弃)</li>
+          <li>官方给的理由:agentic workflow 让单次请求 token 消耗上升 1–2 个量级,老定价结构撑不住</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">「agentic 时代没有便宜的编程 AI」正在变成行业共识——所有靠订阅卖 LLM 调用的产品都要重算 unit economics。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://simonwillison.net/2026/Apr/22/" target="_blank" rel="noopener">Simon Willison(含 GitHub 官方公告链接)</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">Windsurf 2.0 + Devin 内置 <span class="badge">跨窗口 · 4/15–4/16</span></h3>
+        <div class="meta-row">
+          <span class="chip">Cognition AI</span>
+          <span class="chip date">2026-04-15(官博) → 2026-04-16(Product Hunt)</span>
+        </div>
+        <ul class="points">
+          <li>全新 Agent Command Center:Kanban 看板统一管理本地 Cascade + 云端 Devin 会话</li>
+          <li><strong>Spaces</strong>:把 agent 会话、PR、文件、项目上下文打包,切换任务不重建上下文</li>
+          <li>Devin 作为云端 agent 内置 Windsurf,本地规划 → 一键派发到 Devin VM → 关掉笔电也继续跑;PR 回到 Windsurf 内 review</li>
+          <li>含在 Pro / Max / Teams 档;新绑 GitHub 账号可领最多 $50 credits</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">Cognition 正式宣告「Windsurf 独立运营」路线结束,把 IDE 变成「本地 + 云端多 agent 编排器」,和 Cursor 3、Copilot Autopilot 形成三方对垒。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://cognition.ai/blog/devin-in-windsurf" target="_blank" rel="noopener">Cognition 官博</a>
+          <a class="src" href="https://www.testingcatalog.com/windsurf-2-0-adds-devin-and-agent-command-center/" target="_blank" rel="noopener">TestingCatalog</a>
+          <a class="src" href="https://www.hunted.space/product/windsurf" target="_blank" rel="noopener">Product Hunt</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         03 · 论文
+    ============================================================ -->
+    <section id="papers" class="category">
+      <div class="cat-marker">03 / 08 — Research</div>
+      <h2 class="cat-title">三、论文 / 研究进展</h2>
+
+      <div class="item">
+        <h3 class="item-title">When Can LLMs Learn to Reason with Weak Supervision?</h3>
+        <div class="meta-row">
+          <span class="chip">Jingyan Shen 等</span>
+          <span class="chip date">arXiv 2604.18574 · 提交 2026-04-20</span>
+        </div>
+        <ul class="points">
+          <li>系统研究 RLVR 在弱监督(数据稀缺、奖励噪声、自监督代理奖励)下的泛化条件</li>
+          <li>提出用「训练奖励饱和动态」区分泛化型 vs 记忆型模型:泛化型有长时间的 pre-saturation 阶段</li>
+          <li>识别 <em>reasoning faithfulness</em>(中间步骤是否真能支撑答案)作为预测指标;output diversity 单独不靠谱</li>
+          <li>实证:SFT on explicit reasoning traces 是弱监督下泛化的必要条件;continual pre-training 起放大作用——在 Llama3.2-3B-Base 上三种弱监督场景全部从 fail 变 pass</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">为「未来高质量可验证奖励越来越稀缺」的 RLVR 训练路线给了可操作的 SFT → RL 配方。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://arxiv.org/abs/2604.18574v1" target="_blank" rel="noopener">arXiv:2604.18574</a>
+        </div>
+      </div>
+
+      <div class="editor-note">
+        编辑按:窗口内 arXiv trending 相对清淡,本期只保留一篇最对路的,不凑数。
+      </div>
+    </section>
+
+    <!-- ============================================================
+         04 · 深度博客
+    ============================================================ -->
+    <section id="blogs" class="category">
+      <div class="cat-marker">04 / 08 — Long-form</div>
+      <h2 class="cat-title">四、深度博客 / 长文</h2>
+
+      <div class="item">
+        <h3 class="item-title">Changes in the system prompt between Claude Opus 4.6 and 4.7</h3>
+        <div class="meta-row">
+          <span class="chip">Simon Willison</span>
+          <span class="chip date">2026-04-18</span>
+        </div>
+        <p class="item-lead">逐字对比 4.6 vs 4.7 的系统提示词差异,发现新版在工具调用、思考块 default behavior、安全拦截处描述都有调整——这也是 Opus 4.7 行为变化的一手依据。</p>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">本周所有关于 Opus 4.7「变好 / 变笨」的讨论都指向这份 diff,是理解后续定价风波和 Claude Code 表现变化的上游证据。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://simonwillison.net/2026/Apr/18/" target="_blank" rel="noopener">simonwillison.net 4/18</a>
+          <a class="src" href="https://simonwillison.net/2026/Apr/" target="_blank" rel="noopener">4 月月度归档</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">Is Claude Code going to cost $100/month? Probably not</h3>
+        <div class="meta-row">
+          <span class="chip">Simon Willison</span>
+          <span class="chip date">2026-04-22</span>
+        </div>
+        <p class="item-lead">通过网页 diff 捕捉到 Anthropic 定价页的静默修改,串起 Opus 4.7 默认 <code>xhigh</code> → token 消耗暴涨 → 定价调整路径;末尾追问「GitHub Copilot 这个品牌到底指哪 75 个产品中的哪个」。</p>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">示范了一种「看变更、而不是听官方」的产品信号追踪方法。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://simonwillison.net/2026/Apr/22/" target="_blank" rel="noopener">simonwillison.net 4/22</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">Where's the raccoon with the ham radio?(ChatGPT Images 2.0)</h3>
+        <div class="meta-row">
+          <span class="chip">Simon Willison</span>
+          <span class="chip date">2026-04-21</span>
+        </div>
+        <p class="item-lead">对 ChatGPT Images 2.0 做 find-the-raccoon 视觉生成对比测试,记录当前一线图像模型的文本指令遵循能力边界。</p>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">给出一个可复现的、轻量的跨模型图像指令 eval 场景,适合自己套来对比 GPT / Gemini / Imagen。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://simonwillison.net/2026/Apr/21/" target="_blank" rel="noopener">simonwillison.net 4/21</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         05 · X / Twitter
+    ============================================================ -->
+    <section id="twitter" class="category">
+      <div class="cat-marker">05 / 08 — On the Timeline</div>
+      <h2 class="cat-title">五、X / Twitter 热门讨论</h2>
+
+      <div class="item">
+        <h3 class="item-title">@simonw — Anthropic 静默改定价页被抓</h3>
+        <p class="item-lead">Simon Willison 在 X 公开 <code>claude.com/pricing</code> 的修改痕迹,把 $100/月 Claude Code 档的短暂出现与回滚过程全部摊在太阳底下,相关帖子在 4/22 至 4/23 被开发者社区大量转发讨论。</p>
+        <div class="why">
+          <div class="why-label">引发讨论的点</div>
+          <p class="why-body">主流 AI 公司开始用「静默改页面」试探定价——之前 Windsurf 也用类似手法丢掉 credit 系统,信任基础被消耗。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://simonwillison.net/2026/Apr/22/" target="_blank" rel="noopener">Simon Willison 原文与摘录</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">GitHub Copilot Pricing — 开发者集中反弹</h3>
+        <p class="item-lead">GitHub 4/22 官方宣布「暂停 Individual 新订阅 + Opus 4.7 关给 Pro+」——X 和 Hacker News 上开发者普遍表达「agentic era 没人能靠 $10 吃到饱」的焦虑,一批人转向开源模型(DeepSeek-V4、Qwen3.6-27B)+ 自建 agent 流水线。</p>
+        <div class="why">
+          <div class="why-label">引发讨论的点</div>
+          <p class="why-body">「per-request → per-token-per-week」的切换被解读为计费逻辑的时代性转折。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://simonwillison.net/2026/Apr/22/" target="_blank" rel="noopener">Simon Willison 4/22 汇总</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">Qwen3.6-27B 本地跑出旗舰 Coding</h3>
+        <p class="item-lead">Qwen 团队放出 27B dense 模型并声称全面超越 397B MoE 旗舰,16.8 GB 本地量化版立刻在 X 上被大量实测分享;Simon Willison 亲测的「鹈鹕骑自行车」给出「outstanding for a 16.8GB local model」的评价。</p>
+        <div class="why">
+          <div class="why-label">引发讨论的点</div>
+          <p class="why-body">「本地消费级硬件 vs 云端闭源」的性价比天平在这周被强烈拨动。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://simonwillison.net/2026/Apr/22/" target="_blank" rel="noopener">Simon Willison 4/22 note</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         06 · 行业动态
+    ============================================================ -->
+    <section id="industry" class="category">
+      <div class="cat-marker">06 / 08 — Industry Moves</div>
+      <h2 class="cat-title">六、行业动态 / 融资 · 收购 · 政策</h2>
+
+      <div class="item">
+        <h3 class="item-title">Petual 完成 $20M 融资,a16z 领投</h3>
+        <div class="meta-row">
+          <span class="chip">Petual · a16z 领投</span>
+          <span class="chip">$20M</span>
+          <span class="chip date">2026-04-23</span>
+        </div>
+        <ul class="points">
+          <li>投资方:Andreessen Horowitz、First Round Capital、Cowboy Ventures、Elad Gil</li>
+          <li>产品定位:面向企业 audit / compliance 的 agentic AI 平台,切入内部审计和 SOX 团队,起点是控制测试自动化</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">继 Resolve AI、Spektr 之后,a16z 在「把 agent 塞进合规/审计/运维」这条线上连下三城,验证了「有合规墙的 B 端 agent」这类玩法的市场。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://finance.yahoo.com/sectors/technology/articles/petual-raises-20m-bring-agentic-134500264.html" target="_blank" rel="noopener">Yahoo Finance</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">量智开物 发起「追风」/「扁鹊」— AI + 量子计算</h3>
+        <div class="meta-row">
+          <span class="chip">科大讯飞 × 清华翟荟团队</span>
+          <span class="chip date">2026-04-22(2026 智能量子峰会)</span>
+        </div>
+        <ul class="points">
+          <li>量智开物(北京)科技公司揭牌;翟荟团队宣布首次实验捕获 10,064 个原子,突破万量级比特资源,超过加州理工此前 6,100 个的国际纪录</li>
+          <li>联合发布「追风」「扁鹊」两套算法,分别针对「超长序列量子比特捕获 / 操控」与「动态纠错 + 原子丢失应对」</li>
+          <li>刘庆峰判断:今年日均 Token 调用量已达 140 万亿(2024 的 1,400 倍),算力 / 能源瓶颈迫使产业认真探索「量子 for AI」</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">国内首家专注「AI + 量子」的实体公司成立 + 可用比特规模真实跳跃,是本周少见的「下一代算力」侧新闻。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://finance.sina.com.cn/jjxw/2026-04-24/doc-inhvpyyh4490160.shtml" target="_blank" rel="noopener">新浪财经</a>
+          <a class="src" href="https://finance.sina.com.cn/roll/2026-04-23/doc-inhvnhrk3813357.shtml" target="_blank" rel="noopener">每经对话刘庆峰</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">AI 编程工具定价同一天集体洗牌</h3>
+        <div class="meta-row">
+          <span class="chip">Anthropic + GitHub</span>
+          <span class="chip date">2026-04-22</span>
+        </div>
+        <p class="item-lead">同一天内 Claude Code 与 GitHub Copilot 都调整定价 / 限额(见第二节 1 和 2 条),叠加 Windsurf 上月已经放弃了 credit 系统——「AI 编程订阅」的商业模式进入重估期。</p>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">对个人开发者 / 小团队而言,「选哪个订阅」这周开始必须同时看 token budget、每周 session 限额、是否强制 xhigh 这几个维度。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="#products">见第二节各条目链接</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         07 · 开源
+    ============================================================ -->
+    <section id="opensource" class="category">
+      <div class="cat-marker">07 / 08 — Open Source</div>
+      <h2 class="cat-title">七、开源项目</h2>
+
+      <div class="item">
+        <h3 class="item-title">DeepSeek-V4 开源权重</h3>
+        <p class="item-lead">深度求索 4/24 同步开源 V4-Pro(1.6T)与 V4-Flash(284B)的 MoE 权重,默认 1M 上下文。</p>
+        <ul class="points">
+          <li>热度:发布当天 Hugging Face / ModelScope 双端开放;社区 24 小时内即有 vLLM / llama.cpp 适配 PR 在讨论</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">是 2026 年内第一款「万亿参数开源 + 默认百万上下文」模型,直接影响 Agent 框架的 context 管理设计。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://huggingface.co/collections/deepseek-ai/deepseek-v4" target="_blank" rel="noopener">Hugging Face 集合</a>
+          <a class="src" href="https://modelscope.cn/collections/deepseek-ai/DeepSeek-V4" target="_blank" rel="noopener">ModelScope 集合</a>
+          <a class="src" href="https://huggingface.co/deepseek-ai/DeepSeek-V4-Pro/blob/main/DeepSeek_V4.pdf" target="_blank" rel="noopener">技术报告 PDF</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">Ouroboros — 自我改进 Agent <span class="badge">跨窗口 · 4/15 公开</span></h3>
+        <p class="item-lead">一个「会自己改自己代码」的自主 agent,声称上线首日在无人监督下完成 30+ 次自进化循环。</p>
+        <ul class="points">
+          <li>热度:4/15 公开仓库后迅速被转发;默认模型链 <code>claude-sonnet-4.6 → gemini-3-pro-preview → gpt-4.1</code>,通过 OpenRouter 驱动;有 Desktop macOS 原生版本路线</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">在 Karpathy Loop(3 月)之后,「agent 自己做 ML 研究」这条线继续向「agent 自己改自己」前推,设计上值得关注。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://github.com/redbuzzzzzz/ouroboros" target="_blank" rel="noopener">GitHub · fork 可见结构</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         08 · AI 教育
+    ============================================================ -->
+    <section id="education" class="category">
+      <div class="cat-marker">08 / 08 — AI in Education</div>
+      <h2 class="cat-title">八、AI 教育</h2>
+
+      <div class="item">
+        <h3 class="item-title">清华附小「玫瑰小语」主题教学 AI 垂直模型 — 全国首个小学语文学科垂直大模型</h3>
+        <div class="meta-row">
+          <span class="chip">清华大学教育学院 × 在线教育中心 × 计算机系 × 清华附小</span>
+          <span class="chip date">2026-04-17 首发 · 4/21 集中报道</span>
+          <span class="chip">面向:K12 小学语文教师</span>
+        </div>
+        <ul class="points">
+          <li>以清华附小校长窦桂梅近 40 年的「主题教学论」为思想内核,叠加清华 AI 能力做学科垂直模型</li>
+          <li>覆盖「智能备课 → 智能上课 → 智能析课 → 智能研课 → 智能测评」五个教学全流程场景</li>
+          <li>已在 32 个省 / 市 / 区、1,000 多所学校落地,覆盖上万名教师;后续在学堂在线「雨豆」平台上线「攀登小数」「水木小英」等其他学科</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">国内首个学科级垂直大模型,和通用大模型走完全不同的路——把一位特级教师的教学法「打包」给全国基础教育,属于「AI + 教育」领域一个重要的范式拐点。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://finance.sina.com.cn/tjhz/2026-04-21/doc-inhvfytf0140791.shtml" target="_blank" rel="noopener">中国教育新闻网(新浪财经转载)</a>
+          <a class="src" href="https://chuzhong.eol.cn/news/202604/t20260421_2729700.shtml" target="_blank" rel="noopener">教育在线</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">Simple TA — 高校 AI 助教上线</h3>
+        <div class="meta-row">
+          <span class="chip">Simple Higher Ed</span>
+          <span class="chip date">2026-04-21</span>
+          <span class="chip">面向:美国 600+ 高校</span>
+        </div>
+        <ul class="points">
+          <li>面向美国 600+ 高校的 AI 助教系统,直接通过 LTI 接入 LMS,每门课配一个专属 AI TA——接地气于课程 syllabus + 教材 + 教师提供的素材</li>
+          <li>Bring-your-own-key:学校可自选 OpenAI / Google / Anthropic,把课程数据留在自己的生态里</li>
+          <li>与 Simple Syllabus、Simple Prep 拼成一套「课程准备 + 教学辅助」闭环</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">把「AI 助教」做成 LMS 插件而不是独立应用,是目前美高等教育 AI 落地最主流的姿态,避开学术诚信争议。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://www.prweb.com/releases/simple-higher-ed-launches-simple-ta-an-ai-teaching-assistant-built-for-scaling-instructional-support-and-strong-data-governance-302749048.html" target="_blank" rel="noopener">PRWeb</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">Novakid NovaPals — 儿童独立英语会话练习 App</h3>
+        <div class="meta-row">
+          <span class="chip">Novakid</span>
+          <span class="chip date">2026-04-20</span>
+          <span class="chip">面向:K12 儿童 / 青少年英语学习者</span>
+        </div>
+        <ul class="points">
+          <li>AI-native 会话 App,对标儿童到青少年的「中间层」英语学习——已超过低幼内容,又还没到成人 App 的水平</li>
+          <li>24/7 语音练习,对齐 CEFR 评估体系;不是纯 open-ended chatbot,而是目标导向的结构化对话 + 评估追踪</li>
+          <li>背后的 AI tutor「Pandy」由 Novakid 自研,基于多年真实教学数据训练</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">展现了语言学习赛道 AI 产品的新形态——从「陪练机器人」转向「带 learning objective 的结构化 AI tutor」。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://www.newswire.ca/news-releases/novakid-launches-novapals-an-ai-native-conversational-app-designed-for-independent-english-speaking-practice-845051816.html" target="_blank" rel="noopener">Newswire</a>
+        </div>
+      </div>
+
+      <div class="item">
+        <h3 class="item-title">Khan TED Institute — $10K 以下的 AI 本科学位 <span class="badge">跨窗口 · 4/14 TED 大会官宣</span></h3>
+        <div class="meta-row">
+          <span class="chip">Khan Academy × TED × ETS</span>
+          <span class="chip date">2026-04-14 首发 · 4/17 起集中跟进</span>
+          <span class="chip">面向:自学者 / 高中毕业生 / 中期职业人</span>
+        </div>
+        <ul class="points">
+          <li>三家非营利组织合办全新「AI 本科」,首发专业是 Applied AI,目标总学费控制在 $10,000 以下(对比 Stanford / Harvard 每年 $65K–$68K)</li>
+          <li>课程路线图由 Google、Microsoft、Accenture、Bain、McKinsey、Replit 等企业导师共同制定,主打 competency-based(按掌握度毕业而非按课时)</li>
+          <li>全线上、异步、项目制 + 虚拟 dialogue session;预计 12–18 个月后开放申请,之后寻求正规学位 accreditation</li>
+        </ul>
+        <div class="why">
+          <div class="why-label">为什么值得关注</div>
+          <p class="why-body">高等教育界首个「正面迎击名校 + AI 加持 + 用企业共建课程取代传统学科体系」的严肃尝试,如果真能拿到 accreditation,意义远超一个 MOOC。</p>
+        </div>
+        <div class="sources">
+          <span class="sources-label">来源</span>
+          <a class="src" href="https://www.ets.org/newsroom/ets-khan-academy-ted-announce-new-institute-to-reimagine-higher-education-for-the-ai-age.html" target="_blank" rel="noopener">ETS 官方公告</a>
+          <a class="src" href="https://sfstandard.com/2026/04/14/sal-khan-ted-ai-degree/" target="_blank" rel="noopener">SF Standard</a>
+          <a class="src" href="https://www.analyticsinsight.net/amp/story/news/khan-academy-partners-with-google-microsoft-for-affordable-elite-ai-degree" target="_blank" rel="noopener">Analytics Insight 4/17</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         未覆盖 / 待跟进
+    ============================================================ -->
+    <section class="followup">
+      <h2>未覆盖 / 待跟进</h2>
+      <ul>
+        <li>
+          <span class="tag">arXiv</span>
+          <span>本周窗口内实际只命中 1 篇明确贴上 trending 的 reasoning 论文,下周可重点搜 GPT-5.5、DeepSeek-V4 的对应技术报告 / 评测论文。</span>
+        </li>
+        <li>
+          <span class="tag">中文深度</span>
+          <span>机器之心、量子位本周独家深度文多集中在 4/23 DeepSeek 频繁更新、GPT-5.5 分析,文章标题已在搜索中出现但公众号正文未抓到,下周补。</span>
+        </li>
+        <li>
+          <span class="tag">政策监管</span>
+          <span>EU €307M AI funding call 截止 4/15,中美政策面本周没有大动作;可以下周蹲 OpenAI / Anthropic 的 Trusted Access 系列更新。</span>
+        </li>
+        <li>
+          <span class="tag">多模态</span>
+          <span>本周「文生视频 / 语音 agent」赛道没有大新闻,可纳入观察清单。</span>
+        </li>
+      </ul>
+    </section>
+
+  </article>
+
+  <aside class="toc">
+    <div class="toc-label">目录 / Contents</div>
+    <ol>
+      <li><a href="#highlights">本周速览</a></li>
+      <li><a href="#models">模型发布</a></li>
+      <li><a href="#products">AI 产品</a></li>
+      <li><a href="#papers">论文研究</a></li>
+      <li><a href="#blogs">深度长文</a></li>
+      <li><a href="#twitter">X / Twitter</a></li>
+      <li><a href="#industry">行业动态</a></li>
+      <li><a href="#opensource">开源项目</a></li>
+      <li><a href="#education">AI 教育</a></li>
+    </ol>
+  </aside>
+</div>
+
+<footer>
+  <div class="wm">AI <em>周报</em></div>
+  <div class="meta">生成于 2026.04.24 · 由 ai-weekly-digest skill 整理</div>
+</footer>
+
+</body>
+</html>
