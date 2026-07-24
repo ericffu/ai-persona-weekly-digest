@@ -55,6 +55,20 @@
       --accent-subtle: #2B2019;
     }
   }
+  html.dark {
+    --bg: #1A1714;
+    --surface: #22201C;
+    --surface-2: #2E2B26;
+    --text: #F2EFE7;
+    --text-soft: #D5CFC3;
+    --text-muted: #958C80;
+    --divider: #3A352D;
+    --divider-soft: #2A2620;
+    --accent: #E29179;
+    --accent-hover: #F4A48C;
+    --accent-soft: #3E2C24;
+    --accent-subtle: #2B2019;
+  }
 
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -88,6 +102,13 @@
     display: flex; align-items: center; justify-content: space-between;
     gap: 24px;
   }
+  .theme-toggle-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 17px; line-height: 1; padding: 4px 8px;
+    border-radius: 6px; color: var(--text);
+    transition: background .2s;
+  }
+  .theme-toggle-btn:hover { background: var(--divider-soft); }
   .wordmark {
     font-family: var(--serif);
     font-weight: 600;
@@ -233,13 +254,24 @@
   @media (max-width: 960px) {
     .shell { grid-template-columns: 1fr; gap: 48px; padding: 48px 24px 72px; }
     aside.toc {
-      position: static; order: -1;
-      padding: 20px 24px;
-      background: var(--surface);
-      border: 1px solid var(--divider-soft);
-      border-radius: 12px;
+      position: sticky; top: 56px; z-index: 40;
+      order: -1; padding: 10px 20px; margin: 0 -24px 0;
+      background: var(--bg); border-bottom: 1px solid var(--divider-soft);
+      overflow-x: auto; -webkit-overflow-scrolling: touch;
     }
-    .toc ol { flex-direction: row; flex-wrap: wrap; gap: 4px 16px; }
+    .toc-label { display: none; }
+    .toc ol {
+      display: flex; flex-direction: row; gap: 0; white-space: nowrap;
+      padding: 0; margin: 0;
+    }
+    .toc li { margin: 0; counter-increment: none; }
+    .toc a {
+      display: inline-block; padding: 6px 14px; margin-right: 6px;
+      border-radius: 999px; font-size: 12.5px; white-space: nowrap;
+      background: var(--divider-soft); color: var(--text-soft);
+    }
+    .toc a::before { display: none; }
+    .toc a:hover { background: var(--accent-soft); color: var(--accent); }
   }
 
   /* -------- Highlights -------- */
@@ -582,6 +614,7 @@
       <span>AI <em>周报</em></span>
     </a>
     <div class="topnav-meta">Vol. 01 · 2026 · W17</div>
+    <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="切换主题">🌓</button>
   </div>
 </header>
 
@@ -1249,6 +1282,18 @@
 </div>
 
 <footer>
+<script>
+function toggleTheme(){
+  var h=document.documentElement;
+  h.classList.toggle('dark');
+  localStorage.setItem('theme',h.classList.contains('dark')?'dark':'light');
+}
+(function(){
+  var saved=localStorage.getItem('theme');
+  if(saved==='dark'||(saved===null&&window.matchMedia('(prefers-color-scheme:dark)').matches))
+    document.documentElement.classList.add('dark');
+})();
+</script>
   <div class="wm">AI <em>周报</em></div>
   <div class="meta">生成于 2026.04.24 · 由 ai-weekly-digest skill 整理</div>
 </footer>

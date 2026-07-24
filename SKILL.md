@@ -1,20 +1,18 @@
 ---
 name: ai-persona-digest
-description: Generate role-tailored cuts of the weekly AI news digest for one or more audience personas — AI newbie (小白), product manager, engineer/technical, or a user-specified industry practitioner. Reuses the same 8-category bilingual WebSearch material as a general AI weekly digest, then re-selects, re-weights, and rewrites per persona; for the industry persona, asks which industry and runs an extra targeted search for that industry's AI adoption, persisting the industry's search keywords and company watchlist in `references/industries.md` so repeat runs skip re-deriving them. Outputs a Markdown source plus a Claude-website-style HTML page per persona, visually matching the general digest via a local template copy. Use when the user asks for a role/audience-specific AI weekly digest, e.g. "AI 周报 小白版", "给产品经理定制一份 AI 周报", "技术向 AI 周报", "教育行业 AI 周报". Self-contained, independent from `ai-weekly-digest`. In this skill-development workspace, outputs go to `artifacts/ai-persona-digest/`.
+description: Generates role-tailored weekly AI news digests for product managers, engineers, AI newcomers, or industry practitioners. Runs 8-category bilingual WebSearch as material pool, re-selects and rewrites per persona. For industry practitioners, runs extra targeted search and persists keywords in references/industries.md for reuse. Outputs Markdown plus styled HTML per persona. Use when user asks for a persona-specific AI weekly digest, e.g. "AI 周报 小白版", "给产品经理定制一份 AI 周报", "技术向 AI 周报", "教育行业 AI 周报".
 ---
 
 # AI Persona Digest · 角色定制周报
 
 同一批 AI 资讯搜索结果,按读者角色重新筛选、加权、改写语言,产出更贴近该角色需求的定制版周报。**不是重新搜 N 遍,是搜 1 遍素材池裁多份**(行业从业者角色多搜 1 轮专项内容)。
 
-本 skill 完全独立于 `.cursor/skills/ai-weekly-digest`,不读取、不修改它的任何文件,可以整体迁移到别处使用。
-
 ## 何时触发
 
 - "AI 周报小白版 / 给产品经理定制一份 AI 周报 / 技术向 AI 周报 / xx 行业的 AI 周报 / 帮 xx 行业出一份本周 AI 动态"
 - 用户说"帮我定制一份周报"或"生成本周 AI 周报" → 先了解其从业背景，再在内部选定合适的内容策略
 
-不触发:用户要的是不分角色的通用全量周报 → 那是 `.cursor/skills/ai-weekly-digest` 的事,不归这里管。
+不触发:用户要的是不分角色的通用全量周报 —— 那是另一个独立 skill,不归这里管。
 
 ## 四个可选角色
 
@@ -22,16 +20,57 @@ description: Generate role-tailored cuts of the weekly AI news digest for one or
 
 | 角色 | 关心什么 | 需要追问的参数 |
 |---|---|---|
-| **AI 小白** | 看得懂、有代入感,"跟我有什么关系" | 无 |
 | **产品经理** | 产品设计思路、商业打法、增长 | 无 |
 | **技术研发** | 技术细节、可复现性、部署门槛 | 无 |
+| **AI 小白** | 看得懂、有代入感,"跟我有什么关系" | 无 |
 | **XX 行业从业者** | 本行业相关 AI 动态 + 跨界启示 | **必须**追问具体行业名(如"教育""金融"),可选追问关注的具体公司/机构名单(不一定是竞品,合作方、监管对象、任何想跟踪的公司都算) |
 
 每个角色的详细取舍规则、语言风格、输出模板见 [references/personas.md](references/personas.md)——生成哪个角色就读哪个角色的章节,不用整份读完。
 
+## 跨平台决策交互
+
+每次要让用户选择版本时,按以下规则调用平台的原生决策 UI 工具,不支持时退回纯文字:
+
+**平台工具映射**:
+
+| 平台 | 工具名 | 说明 |
+|------|--------|------|
+| WorkBuddy / Claude Code | `AskUserQuestion` | 直接调用,参数一致 |
+| Cursor | `AskQuestion` | **仅 Plan Mode 有效**,普通 Agent 模式不生效 |
+| Codex | `ask_user_question` 或 `request_user_input` | 参数结构略有差异,包含 `id` 字段 |
+
+**执行策略**:
+- 优先调用当前平台的决策 UI 工具。如果工具不存在或调用失败（如 Cursor 非 Plan Mode、Codex 模式不支持）,**立即退回纯文字询问**（直接输出文字让用户选择）,不要让用户看到报错或卡住
+- 回退的文字版本直接说:"我可以生成下面几个版本,你选哪个？1. 产品经理版 2. 技术研发版 3. AI 小白版 4. 行业从业者版(告诉我行业)"
+
 ## 前置:选择周报版本与参数
 
-第一次生成时，直接询问：**“我可以生成 AI 小白版本、产品经理版本、技术研发版本，或者你告诉我你的行业，我可以生成你行业对应的版本。”** 固定的三类版本让用户直接选择；用户提供行业时，进入行业从业者策略。允许用户一次选择多个固定版本。
+第一次生成时,按「跨平台决策交互」规则弹出选择弹窗或文字询问,让用户从三个固定版本中选择,并提供"行业从业者"选项。示例配置如下(WorkBuddy / Claude Code):
+
+```
+AskUserQuestion({
+  questions: [{
+    question: "请选择想要生成的 AI 周报版本（可多选）",
+    header: "周报版本",
+    multiSelect: true,
+    options: [
+      { label: "产品经理版",
+        description: "提炼交互设计、商业化打法、增长启示和竞品洞察" },
+      { label: "技术研发版",
+        description: "关注架构、基准、部署门槛和可复现性" },
+      { label: "AI 小白版",
+        description: "大白话说明本周变化与实际影响，看得懂、有代入感" },
+      { label: "行业从业者版",
+        description: "提供行业名，针对性搜一轮专项内容再出周报" }
+    ]
+  }]
+})
+```
+
+用户选完后:
+- 选了一个或多个固定版本(产品经理/技术研发/小白)→ 正常按所选版本生成
+- 选了"行业从业者版"→ **必须**追问具体行业名（可以再弹一个单选的 `AskUserQuestion` 或者直接文字询问）,不能自己瞎猜
+- 同时选了固定版本和行业版 → 都生成,按各自的流程走
 
 1. 若用户选择行业版:**必须**确认具体行业(不能自己瞎猜)
 2. 拿到行业名后,先 Read [references/industries.md](references/industries.md) 查这个行业有没有记录过:
@@ -39,14 +78,11 @@ description: Generate role-tailored cuts of the weekly AI news digest for one or
    - **没有记录** → 正常追问一句"有没有特别想跟踪动态的具体公司/机构"(不局限于竞品,合作方、监管对象、上下游都算),没有就跳过公司雷达小节;这是第一次遇到这个行业,生成完之后要回来记录(见「行业专项搜索」)
 3. 确定日期窗口:默认最近 7 天,用户可另外指定;`date +%F` 取今天,`date -v-7d +%F` 取 7 天前
 
-## 素材池:先查有没有现成的通用周报
+## 素材池:自己搜
 
-检查 `artifacts/ai-weekly-digest/AI周报-<START>_<END>.md` 是否已存在:
+直接按下面「通用素材搜索」跑一遍 8 类 × 中英双语 WebSearch,产出内部素材池(不必写文件落盘)。
 
-- **存在** → 直接 Read 它作为素材池,不用重新搜 7 类,省时间
-- **不存在** → 自己按下面「通用素材搜索」跑一遍 7 类 × 中英双语 WebSearch,产出一份内部素材池(不必写文件落盘,除非用户后续也想要通用版)
-
-## 通用素材搜索(7 类 × 中英双语,并行发起)
+## 通用素材搜索(8 类 × 中英双语,并行发起)
 
 这一步是给**多个角色**供料,不是只给一份通用周报供料,所以关键词要尽量铺开、宁可多搜不要漏搜——每类至少按下表的英文/中文关键词各搜一轮,能多加变体就多加,不要只挑 1-2 个词应付:
 
@@ -56,19 +92,20 @@ description: Generate role-tailored cuts of the weekly AI news digest for one or
 | AI 产品/Agent | `AI product launch this week`, `new AI agent release`, `AI coding tool launch`, `Cursor / Windsurf / Devin update`, `AI agent pricing model`, `AI app growth metrics` | `AI 产品发布 <日期>`, `AI Agent 上线`, `AI 创业公司 新品`, `AI 编辑器 发布`, `AI 产品 定价 / 商业化`, `AI 产品 增长数据` |
 | 论文/研究 | `arxiv trending AI this week`, `notable AI papers <month>`, `AlphaXiv top`, `Hugging Face papers trending` | `arXiv 热门论文 AI`, `<实验室/机构> 发布研究` |
 | 深度博客 | `Simon Willison blog`, `Hacker News AI frontpage`, `Stratechery AI`, `One Useful Thing Ethan Mollick`, `Interconnects` | `机器之心 本周`, `量子位 本周`, `Founder Park AI`, `远川研究所 AI` |
-| X/Twitter | `viral AI twitter thread <week>`, `@sama tweet`, `@karpathy tweet`, `@miramurati tweet`, `@jimfan tweet` | `AI 微博 热帖 <日期>`, `AI Twitter 热门` |
-| 行业动态 | `AI funding round <week>`, `AI acquisition <week>`, `AI regulation <week>`, `AI lawsuit` | `AI 融资 <日期>`, `AI 收购`, `AI 监管 政策`, `AI 诉讼` |
+| X/Twitter | `viral AI twitter thread <week>`, `@sama tweet`, `@karpathy tweet`, `@miramurati tweet`, `@jimfan tweet` | `AI 小红书 热门 <日期>`, `AI 抖音 热门`, `AI 推文 热搜` |
+| 行业动态 | `AI regulation <week>`, `AI policy`, `AI lawsuit`, `AI industry trends` | `AI 监管 政策`, `AI 合规`, `AI 行业趋势`, `AI 市场动态` |
+| 投融资 | `AI funding round <week>`, `AI startup investment`, `AI acquisition <week>`, `AI company valuation` | `AI 融资 <日期>`, `AI 投资`, `AI 收购`, `AI 估值` |
 | 开源项目 | `GitHub trending AI <week>`, `new AI open source repo`, `top AI repo this week` | `GitHub 热门 AI 项目 <日期>`, `开源大模型 新项目` |
 
-> **说明：「AI 教育」不在此处搜——它是垂直行业分类,不是通用技术类别。当用户选择的行业是"教育"或相关领域时,走「行业专项搜索」流程即可,不用在通用素材池里搜一遍。
+**信源质量与验证**:优先使用一手来源——官方公告(模型发布页、产品博客)、权威媒体(科技日报、界面新闻、量子位、机器之心)、学术来源(arXiv、Hugging Face)。避免低质量二次转载站、聚合站、SEO 垃圾站和纯粹的公关稿。搜索结束后,对信息源逐一验证:每条内容必须有可追溯的原始链接,无法溯源的内容不纳入素材池。搜索结果中若发现明显为 AI 创业公司付费软文/通稿的内容,予以排除。
 
-**收录数量不设 5–10 条上限**(这点和 `ai-weekly-digest` 不同):这里是内部素材池,不是最终交付物,宽进一点没关系,交给后面每个角色各自的筛选规则去收窄——如果收窄到只剩 5–10 条,技术研发/产品经理这类需要"同类目里挑重点"的角色会没材料可选。
+**收录数量不设上限**:这里是内部素材池,不是最终交付物,宽进一点没关系,交给后面每个角色各自的筛选规则去收窄——如果收窄到只剩 5–10 条,技术研发/产品经理这类需要"同类目里挑重点"的角色会没材料可选。
 
-时间过滤、去重、只保留有链接的条目——这几条硬规则和 `ai-weekly-digest` 一致,按常识执行即可。
+时间过滤、去重、只保留有链接的条目——按常识执行即可。
 
 ## 行业专项搜索(仅"行业从业者"角色触发,避免重复劳动)
 
-在通用素材池之外,**额外**为该行业跑一轮中英双语 WebSearch,不要用通用 7 类的关键词凑数。先看 [references/industries.md](references/industries.md) 里这个行业有没有已记录的关键词:
+在通用素材池之外,**额外**为该行业跑一轮中英双语 WebSearch,不要用通用 8 类的关键词凑数。先看 [references/industries.md](references/industries.md) 里这个行业有没有已记录的关键词:
 
 - **有记录**:直接用记录里的中英文关键词发起搜索(可以补一下日期范围),不用重新现想;如果搜索过程中发现明显更好用的新词,顺手加进去更新那一节
 - **没有记录**(第一次遇到):用通用模式现想关键词,例如:
@@ -78,7 +115,7 @@ description: Generate role-tailored cuts of the weekly AI news digest for one or
   - 如果用户给了具体公司名单:`<公司名> AI` 逐个查一遍最新动态
   - 搜完之后,在 references/industries.md 末尾新建一节,把这次实际用的关键词 + 用户给的公司名单记录下来(格式见 references/industries.md「记录格式」),下次同一行业就能直接跳过这一步现想
 
-这轮搜索结果是该角色版本行业专项小节的核心素材;通用素材池里对该行业有外溢影响的条目则按通用板块分类(模型发布/AI 产品/行业动态等)各自独立成节,不再合并到一个"跨板块外溢"小节——保持和通用周报类似的板块结构感,详见 references/personas.md 模板。
+这轮搜索结果是该角色版本**"一、<行业>AI 动态"**小节的核心素材。其他通用板块（模型发布、AI 产品、行业动态、投融资、开源、深度观点全部从通用 8 类素材池出，内容为 AI 行业本身的信息，不混入行业专项搜索结果。详见 references/personas.md 模板。
 
 ## 输出文件与命名
 
@@ -93,7 +130,7 @@ description: Generate role-tailored cuts of the weekly AI news digest for one or
 
 ## HTML 输出:复用同一套设计系统
 
-本 skill 目录下的 [assets/template.html](assets/template.html) 是 `ai-weekly-digest` 那套 Claude 官网风(暖米色纸感 + Fraunces + Claude 橙 `#CC785C`)设计系统的**本地独立副本**——拷贝过来是为了保持视觉一致,不是运行时去读另一个 skill 的文件,两边各自维护自己那份,不产生依赖。
+本 skill 目录下的 [assets/template.html](assets/template.html) 是一套 Claude 官网风 HTML 模板(暖米色纸感 + Fraunces + Claude 橙 `#CC785C`),内嵌设计系统,是单文件自足的本地副本。
 
 生成规则:
 
@@ -103,6 +140,13 @@ description: Generate role-tailored cuts of the weekly AI news digest for one or
 - `.topnav-meta` 和 `.hero-label` 要标出这是哪个角色版本,例如 `角色版 · 小白 · <窗口>` / `AI Weekly · 产品经理版`,让人一眼看出这不是通用版
 - 单文件自足:所有 CSS 内嵌,只从 Google Fonts 加载字体,不引入其他外部依赖
 
+## 输出质量要求
+
+- **条数下限**:每个分类板块(模型发布/AI 产品/投融资/行业动态/开源/深度观点等)不少于 **4 条**;行业从业者版的行业专项板块不少于 **6–7 条**。素材池里实在不够就如实呈现,不要编造条目凑数。
+- **信源质量**:优先使用一手来源——官方公告(模型发布页、产品博客)、权威媒体(科技日报、界面新闻、量子位、机器之心)、学术来源(arXiv、Hugging Face)。避免低质量二次转载站、聚合站、SEO 垃圾站。排除明显为 AI 创业公司付费软文/通稿的内容。
+- **信源可追溯**:每条内容必须有可追溯的原始链接。最终输出中每条都需标注来源链接,无法溯源的内容不纳入。
+- **行业解读用语**:行业从业者版的每条解读统一使用 **"对<行业>的潜在影响"** 格式,不要用"对我们业务的启示"这种第一人称表述。
+
 ## 工作流
 
 ```
@@ -110,7 +154,7 @@ Progress:
 - [ ] 1. 询问用户选择 AI 小白、产品经理、技术研发版本，或提供行业;可多选固定版本
 - [ ] 2. 若用户提供行业,确认行业;Read references/industries.md 查是否已有记录,有则复用关键词+公司名单,没有才追问关注公司名单
 - [ ] 3. 确定日期窗口(START/END)
-- [ ] 4. 检查通用周报 md 是否已存在,存在则 Read 复用,不存在则自己跑 7 类 × 双语 WebSearch
+- [ ] 4. 跑 8 类 × 双语 WebSearch 作为通用素材池
 - [ ] 5. 若含"行业从业者":额外跑一轮行业专项 WebSearch(复用或现想关键词,见「行业专项搜索」)
 - [ ] 6. Read references/personas.md 中所选内部策略的章节,按其取舍规则筛选、按其模板改写
 - [ ] 7. 写入 artifacts/ai-persona-digest/AI周报-<角色标签>-<START>_<END>.md(每角色一个文件)
@@ -121,14 +165,13 @@ Progress:
 
 ## 反模式
 
-- ❌ 每个角色重新跑一遍 7 类搜索 → ✅ 搜 1 遍素材池,裁多份(行业专项搜索例外)
+- ❌ 每个角色重新跑一遍 8 类搜索 → ✅ 搜 1 遍素材池,裁多份(行业专项搜索例外)
 - ❌ 把行业版和固定版本混成难懂的角色菜单 → ✅ 明确提供 AI 小白、产品经理、技术研发三个固定选项；行业版只需让用户说出所在行业
 - ❌ "行业从业者"角色不问具体行业,自己瞎猜 → ✅ 必须先问清楚,没问清楚不要往下走
 - ❌ 把角色版做成"更短的摘要" → ✅ 是"筛选 + 改写语言 + 额外一句解读",不是简单缩写原文
 - ❌ 给小白版也保留参数堆砌的技术细节(如"2.8 万亿参数 MoE") → ✅ 彻底改写成感受性描述
 - ❌ 编造条目凑数 → ✅ 素材池里没有就不硬凑,某角色版本条数少也可以
-- ❌ 改动 `.cursor/skills/ai-weekly-digest` 的任何文件,或运行时去读它的 template.html → ✅ 只读不改,两个 skill 完全独立,各自持有自己的模板副本(本 skill 的副本在 `assets/template.html`)
-- ❌ 只出 md 忘了 html,或者 html 另起一套视觉风格 → ✅ md + html 两份同步,样式必须和通用版一致
+- ❌ 只出 md 忘了 html,或者 html 另起一套视觉风格 → ✅ md + html 两份同步,样式保持模板一致
 - ❌ HTML 里照抄 8 个固定锚点 → ✅ 锚点数量跟着该角色的实际分节数走
 - ❌ 同一行业每次都从零现想关键词、重新问一遍关注哪些公司 → ✅ 先查 references/industries.md,有记录就复用
 - ❌ 生成完"行业从业者"版本忘了回填 references/industries.md → ✅ 第一次记录、后续有新发现都要顺手更新,这是这个机制的价值所在

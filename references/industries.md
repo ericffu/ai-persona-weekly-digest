@@ -39,3 +39,23 @@
   - 英文:`AI film production 2026`、`AI in film and TV industry`、`Runway Pika Sora AI video tool 2026`、`AI movie feature film 2026`
 - **关注公司/机构名单**:暂无
 - **备注**:AI 影视的核心关注点包括 AI 长片工业化进展、AI 视频工具（Muse/Seedance/可灵/Veo/Sora/Runway）能力进化、AI 影视合规路径、传统电影工业与 AI 的碰撞讨论、混合拍摄模式（真人+AI）等。行业动态常出现在戛纳/上海电影节等行业展会窗口。
+
+## 金融
+
+- **首次记录**:2026-07-25
+- **最近更新**:2026-07-25
+- **专项搜索关键词**:
+  - 中文:`金融AI 2026年7月`、`AI金融大模型 发布`、`金融科技 AI 银行 保险 券商`、`智能投顾 量化交易 AI`、`AI金融监管 政策 2026`、`AI财富管理`
+  - 英文:`AI in finance 2026`、`financial services AI model`、`AI investment banking fintech`、`AI quantitative trading 2026`、`AI regulation finance China 2026`
+- **关注公司/机构名单**:暂无
+- **备注**:金融 AI 的核心关注维度包括银行/证券/保险的 AI 场景落地（智能尽调、AI 一体机、智能投顾）、监管政策动向（证监会 AI 课题、金融监管总局指导意见）、Agentic Investing 趋势、大模型本地化部署在金融业的渗透、AI 对 A 股定价规则的潜在重构。WAIC 是金融 AI 产品密集发布的窗口。
+
+## 体育
+
+- **首次记录**:2026-07-25
+- **最近更新**:2026-07-25
+- **专项搜索关键词**:
+  - 中文:`体育AI 2026年7月`、`人工智能体育 应用`、`运动科技 AI`、`赛事 AI 转播 裁判`、`运动健康 AI 大模型`、`体育 AI 融资`
+  - 英文:`AI in sports 2026`、`sports AI analytics`、`AI sports broadcasting`、`AI sports training`、`sports tech investment 2026`
+- **关注公司/机构名单**:暂无
+- **备注**:体育 AI 的核心关注维度包括：顶级赛事 AI 方案（世界杯等）、运动垂类大模型、AI 运动硬件（教练机器人、AR 眼镜）、AI 体育内容生产（战报/剪辑/解说）、运动健康 AI 应用。2026 世界杯是重要的 AI 验证场景。Keep、庞伯特、联想等是活跃玩家。
