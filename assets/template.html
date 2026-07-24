@@ -252,24 +252,23 @@
   .toc a:hover::before { opacity: 1; color: var(--accent); }
 
   @media (max-width: 960px) {
-    .shell { grid-template-columns: 1fr; gap: 48px; padding: 48px 24px 92px; }
+    .shell { grid-template-columns: 1fr; gap: 48px; padding: 48px 24px 80px; }
     aside.toc {
       position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
-      padding: 8px 16px;
-      background: rgba(from var(--bg) r g b / 0.75);
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      border-top: 1px solid var(--divider-soft);
+      padding: 6px 12px;
+      background: var(--bg);
+      border-top: 1px solid var(--divider);
       overflow-x: auto; -webkit-overflow-scrolling: touch;
     }
     .toc-label { display: none; }
     .toc ol {
-      display: flex; flex-direction: row; gap: 0; white-space: nowrap;
+      display: flex; flex-direction: row; gap: 4px; white-space: nowrap;
       padding: 0; margin: 0;
     }
     .toc li { margin: 0; counter-increment: none; }
     .toc a {
-      display: inline-block; padding: 6px 14px; margin-right: 6px;
-      border-radius: 999px; font-size: 12.5px; white-space: nowrap;
+      display: inline-block; padding: 4px 10px;
+      border-radius: 6px; font-size: 11.5px; white-space: nowrap;
       background: var(--divider-soft); color: var(--text-soft);
     }
     .toc a::before { display: none; }
