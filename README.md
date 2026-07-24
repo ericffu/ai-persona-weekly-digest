@@ -2,7 +2,9 @@
 
 一个按读者角色定制 AI 周报的 Codex skill。同一批 8 类 AI 资讯素材池，按角色筛选、加权、改写，一次搜索产出多份定制版周报。
 
-![周报预览](assets/screenshot.png)
+| 亮色模式 | 暗色模式 |
+|----------|----------|
+| ![亮色](assets/screenshot-light.png) | ![暗色](assets/screenshot-dark.png) |
 
 ## 支持的角色
 
@@ -21,6 +23,7 @@
 - **行业记忆**：`references/industries.md` 记录每个行业的关键词和关注公司，下次直接复用
 - **信源可追溯**：优先一手来源，每条标注原始链接，排除公关稿和 SEO 垃圾站
 - **质量下限**：每个通用板块 ≥4 条，行业专项 ≥6-7 条
+- **跨平台兼容**：决策弹窗用平台原生 `AskUserQuestion`（WorkBuddy / Claude Code / Cursor Plan / Codex），不支持时回退纯文字
 
 ## 安装到 Codex
 
