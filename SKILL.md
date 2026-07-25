@@ -136,6 +136,7 @@ AskUserQuestion({
 
 - **不改 `<style>`**:配色、字体、间距跨角色保持一致;要改样式就统一改这份 `assets/template.html`,不要每次生成时顺手改样式
 - 复用 `.hero` / `.shell` / `article` / `aside.toc` / `section.category` / `.item` / `.why` / `.sources` / `footer` 这套现成组件,内容替换,DOM 结构不变
+- **Hero 大字规则(关键)**:`<h1 class="hero-title">` 必须用模板的 `clamp(44px, 6.6vw, 84px)` 字号,不要写死;`AI` 和行业关键词都用 `<em>` 包裹,统一用 `var(--accent)` 强调色。详见 references/personas.md「通用 · Hero 大字规则」节。
 - **分节数量按该角色的实际结构走,不是固定 8 类**:小白版通常 1–2 个 `section.category`(比如"详情"一节),产品经理/技术研发版通常 3 个主题分节,行业从业者版按通用板块结构展开(行业专项 + 模型发布 / AI 产品 / 行业动态 / 开源 / 深度观点等,可选的关注公司动态)——`aside.toc` 的锚点列表要跟着实际分节数改,不要照抄 8 个锚点
 - `.topnav-meta` 和 `.hero-label` 要标出这是哪个角色版本,例如 `角色版 · 小白 · <窗口>` / `AI Weekly · 产品经理版`,让人一眼看出这不是通用版
 - 单文件自足:所有 CSS 内嵌,只从 Google Fonts 加载字体,不引入其他外部依赖
