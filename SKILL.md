@@ -1,6 +1,6 @@
 ---
 name: ai-persona-digest
-description: Generates role-tailored weekly AI news digests for product managers, engineers, AI newcomers, or industry practitioners. Runs 8-category bilingual WebSearch as material pool, re-selects and rewrites per persona. For industry practitioners, runs extra targeted search and persists keywords in references/industries.md for reuse. Outputs Markdown plus styled HTML per persona. Use when user asks for a persona-specific AI weekly digest, e.g. "AI 周报 小白版", "给产品经理定制一份 AI 周报", "技术向 AI 周报", "教育行业 AI 周报".
+description: Generates role-tailored weekly AI news digests — AI industry practitioner (comprehensive), AI newbie (小白), or specific industry practitioner. Runs 8-category bilingual WebSearch as material pool, re-selects and rewrites per persona. For industry practitioners, runs extra targeted search and persists keywords in references/industries.md for reuse. Outputs Markdown plus styled HTML per persona. Use when user asks for a persona-specific AI weekly digest, e.g. "AI 周报 小白版", "AI 行业版", "教育行业 AI 周报".
 ---
 
 # AI Persona Digest · 角色定制周报
@@ -14,14 +14,13 @@ description: Generates role-tailored weekly AI news digests for product managers
 
 不触发:用户要的是不分角色的通用全量周报 —— 那是另一个独立 skill,不归这里管。
 
-## 四个可选角色
+## 三个可选角色
 
 一次可以多选,同时产出多份。
 
 | 角色 | 关心什么 | 需要追问的参数 |
 |---|---|---|
-| **产品经理** | 产品设计思路、商业打法、增长 | 无 |
-| **技术研发** | 技术细节、可复现性、部署门槛 | 无 |
+| **AI 行业从业者** | 本周 AI 全行业动态的全景纵览——模型/产品/投融资/交互范式/商业增长等全方位覆盖,最详尽的版本 | 无 |
 | **AI 小白** | 看得懂、有代入感,"跟我有什么关系" | 无 |
 | **XX 行业从业者** | 本行业相关 AI 动态 + 跨界启示 | **必须**追问具体行业名(如"教育""金融"),可选追问关注的具体公司/机构名单(不一定是竞品,合作方、监管对象、任何想跟踪的公司都算) |
 
@@ -41,7 +40,7 @@ description: Generates role-tailored weekly AI news digests for product managers
 
 **执行策略**:
 - 优先调用当前平台的决策 UI 工具。如果工具不存在或调用失败（如 Cursor 非 Plan Mode、Codex 模式不支持）,**立即退回纯文字询问**（直接输出文字让用户选择）,不要让用户看到报错或卡住
-- 回退的文字版本直接说:"我可以生成下面几个版本,你选哪个？1. 产品经理版 2. 技术研发版 3. AI 小白版 4. 行业从业者版(告诉我行业)"
+- 回退的文字版本直接说:"我可以生成下面几个版本,你选哪个？1. AI 行业从业者版(最详尽的 AI 全行业全景) 2. AI 小白版(大白话,普通人看得懂) 3. 行业从业者版(告诉我行业,做针对性内容)"
 
 ## 前置:选择周报版本与参数
 
@@ -54,10 +53,8 @@ AskUserQuestion({
     header: "周报版本",
     multiSelect: true,
     options: [
-      { label: "产品经理版",
-        description: "提炼交互设计、商业化打法、增长启示和竞品洞察" },
-      { label: "技术研发版",
-        description: "关注架构、基准、部署门槛和可复现性" },
+      { label: "AI 行业从业者版",
+        description: "本周 AI 全行业动态的全景纵览——模型/产品/投融资/交互范式/商业增长等,最详尽的版本" },
       { label: "AI 小白版",
         description: "大白话说明本周变化与实际影响，看得懂、有代入感" },
       { label: "行业从业者版",
@@ -68,9 +65,10 @@ AskUserQuestion({
 ```
 
 用户选完后:
-- 选了一个或多个固定版本(产品经理/技术研发/小白)→ 正常按所选版本生成
+- 选了"AI 行业从业者版"→ 按 AI 行业从业者模板生成,这是最详尽的版本,全模块覆盖
+- 选了"AI 小白版"→ 按小白版规则生成
 - 选了"行业从业者版"→ **必须**追问具体行业名（可以再弹一个单选的 `AskUserQuestion` 或者直接文字询问）,不能自己瞎猜
-- 同时选了固定版本和行业版 → 都生成,按各自的流程走
+- 同时选了多个版本 → 都生成,按各自的流程走
 
 1. 若用户选择行业版:**必须**确认具体行业(不能自己瞎猜)
 2. 拿到行业名后,先 Read [references/industries.md](references/industries.md) 查这个行业有没有记录过:
@@ -99,7 +97,7 @@ AskUserQuestion({
 
 **信源质量与验证**:优先使用一手来源——官方公告(模型发布页、产品博客)、权威媒体(科技日报、界面新闻、量子位、机器之心)、学术来源(arXiv、Hugging Face)。避免低质量二次转载站、聚合站、SEO 垃圾站和纯粹的公关稿。搜索结束后,对信息源逐一验证:每条内容必须有可追溯的原始链接,无法溯源的内容不纳入素材池。搜索结果中若发现明显为 AI 创业公司付费软文/通稿的内容,予以排除。
 
-**收录数量不设上限**:这里是内部素材池,不是最终交付物,宽进一点没关系,交给后面每个角色各自的筛选规则去收窄——如果收窄到只剩 5–10 条,技术研发/产品经理这类需要"同类目里挑重点"的角色会没材料可选。
+**收录数量不设上限**:这里是内部素材池,不是最终交付物,宽进一点没关系,交给后面每个角色各自的筛选规则去收窄。
 
 时间过滤、去重、只保留有链接的条目——按常识执行即可。
 
@@ -137,7 +135,7 @@ AskUserQuestion({
 - **不改 `<style>`**:配色、字体、间距跨角色保持一致;要改样式就统一改这份 `assets/template.html`,不要每次生成时顺手改样式
 - 复用 `.hero` / `.shell` / `article` / `aside.toc` / `section.category` / `.item` / `.why` / `.sources` / `footer` 这套现成组件,内容替换,DOM 结构不变
 - **Hero 大字规则(关键)**:`<h1 class="hero-title">` 必须用模板的 `clamp(44px, 6.6vw, 84px)` 字号,不要写死;`AI` 和行业关键词都用 `<em>` 包裹,统一用 `var(--accent)` 强调色。详见 references/personas.md「通用 · Hero 大字规则」节。
-- **分节数量按该角色的实际结构走,不是固定 8 类**:小白版通常 1–2 个 `section.category`(比如"详情"一节),产品经理/技术研发版通常 3 个主题分节,行业从业者版按通用板块结构展开(行业专项 + 模型发布 / AI 产品 / 行业动态 / 开源 / 深度观点等,可选的关注公司动态)——`aside.toc` 的锚点列表要跟着实际分节数改,不要照抄 8 个锚点
+- **分节数量按该角色的实际结构走**:小白版通常 1–2 个 `section.category`(比如"详情"一节);AI 行业从业者版覆盖全部模块,包括模型发布 / AI 产品 / 论文 / 深度博客 / 热点讨论 / 行业动态 / 投融资 / 开源 / 深度观点,外加交互范式 / 产品设计和商业模式 / 增长打法两个附加模块;行业从业者版按通用板块结构展开(行业专项 + 模型发布 / AI 产品 / 行业动态 / 开源 / 深度观点等,可选的关注公司动态)
 - `.topnav-meta` 和 `.hero-label` 要标出这是哪个角色版本,例如 `角色版 · 小白 · <窗口>` / `AI Weekly · 产品经理版`,让人一眼看出这不是通用版
 - 单文件自足:所有 CSS 内嵌,只从 Google Fonts 加载字体,不引入其他外部依赖
 
