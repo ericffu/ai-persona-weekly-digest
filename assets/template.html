@@ -39,23 +39,7 @@
     --col-reading: 760px;
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1A1714;
-      --surface: #22201C;
-      --surface-2: #2E2B26;
-      --text: #F2EFE7;
-      --text-soft: #D5CFC3;
-      --text-muted: #958C80;
-      --divider: #3A352D;
-      --divider-soft: #2A2620;
-      --accent: #E29179;
-      --accent-hover: #F4A48C;
-      --accent-soft: #3E2C24;
-      --accent-subtle: #2B2019;
-    }
-  }
-  html.dark {
+  :root.dark {
     --bg: #1A1714;
     --surface: #22201C;
     --surface-2: #2E2B26;
@@ -618,7 +602,7 @@
       <span>AI <em>周报</em></span>
     </a>
     <div class="topnav-meta">Vol. 01 · 2026 · W17</div>
-    <button class="theme-toggle-btn" onclick="toggleTheme()" aria-label="切换主题">🌓</button>
+    <button class="theme-toggle-btn" aria-label="切换主题">🌓</button>
   </div>
 </header>
 
@@ -1299,6 +1283,8 @@ function toggleTheme(){
   var saved=localStorage.getItem('theme');
   if(saved==='dark'||(saved===null&&window.matchMedia('(prefers-color-scheme:dark)').matches))
     document.documentElement.classList.add('dark');
+  var btn=document.querySelector('.theme-toggle-btn');
+  if(btn)btn.onclick=function(){toggleTheme()};
 })();
 /* JS scroll offset fix for sticky topnav + bottom TOC */
 document.addEventListener('click',function(e){
