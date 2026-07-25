@@ -71,8 +71,7 @@
   }
 
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; scroll-padding-bottom: 56px; scroll-padding-top: 48px; }
-  .category, .item { scroll-margin-bottom: 56px; scroll-margin-top: 48px; }
+  html { scroll-behavior: smooth; }
   body {
     margin: 0;
     background: var(--bg);
@@ -1301,6 +1300,14 @@ function toggleTheme(){
   if(saved==='dark'||(saved===null&&window.matchMedia('(prefers-color-scheme:dark)').matches))
     document.documentElement.classList.add('dark');
 })();
+/* JS scroll offset fix for sticky topnav + bottom TOC */
+document.addEventListener('click',function(e){
+  var a=e.target.closest('a[href^="#"]');if(!a)return;
+  var id=a.getAttribute('href').slice(1),el=id?document.getElementById(id):null;
+  if(!el)return;e.preventDefault();
+  var top=el.getBoundingClientRect().top+window.scrollY-48;
+  window.scrollTo({top:top,behavior:'smooth'});
+});
 </script>
   <div class="wm">AI <em>周报</em></div>
   <div class="meta">生成于 2026.04.24 · 由 ai-weekly-digest skill 整理</div>
